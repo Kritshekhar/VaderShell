@@ -1,17 +1,26 @@
-<div align="center" style="font-family: Arial, sans-serif; padding: 20px;">
+<div align="center" style="font-family: 'Courier New', Courier, monospace; padding: 20px; background-color: black; color: white;">
 
-  <h1 style="color: #008000; font-size: 2.5em; font-weight: bold; margin-bottom: 10px;">
-    <!--☁️ Welcome to <span style="color: #004d00;">VaderShell</span> ☁️-->
+  <h1 style="font-size: 3em; font-weight: bold; margin-bottom: 20px;">
     🚀 Welcome to the <span style="color: #004d00;">Dark Side - <strong>VaderShell</strong> </span>
   </h1>
 
-  <hr style="width: 60%; border: 1px solid #008000; margin: 20px auto;">
-
-  <p style="font-size: 1.2em; color: #333; max-width: 600px;">
-    A powerful, automated <strong>VaderShell</strong>! command center to connect, control, and operate on all your infrastructure in one place. 
+  <!---<hr style="width: 60%; border: 1px solid #FFD700; margin: 20px auto;">-->
+  
+  <p style="font-size: 1.5em; text-transform: uppercase; line-height: 1.5; max-width: 600px; margin: auto; font-weight: bold;">
+    <span style="color: #FFD700;">Episode I:</span> <span style="color: #FF0000;">The Rise of VaderShell</span>
+  </p>
+  <span style="color: #FFD700;">A long time ago, in a galaxy far, far away...</span>
+  <p style="font-size: 1.2em; color: #DDD; max-width: 600px; margin: 20px auto; text-align: center;">
+    It is a time of technological upheaval. The <strong>VaderShell</strong> has emerged as a powerful automated command center. <br>
+    With it, you can connect, control, and dominate all of your infrastructure with one unified force.
+    <br><br>
+    The Dark Side awaits... Will you answer the call?
   </p>
 
+  ---
 </div>
+
+
  
 
 ## 🌌 Features  
@@ -46,10 +55,31 @@ DATACENTER_GW_IP=10.107.30.1
 DATACENTER_BASE_IP=10.107.30.100
 
 # SSH key for authentication
-SSH_KEY_PATH="/path/to/your/private_key.pem"
+DATACENTER_GW_SSH_KEY_PATH="/path/to/your/private_key"
 
 # The Mothership (Admin Server) – Master control node
-ADMIN_SERVER="vader-mothership"
+ADMIN_SERVER="<hostname>:<user>@<user>"
+
+# Username for the mother ship server
+MOTHERSHIP_USER="skywalker"
+
+# IP address of the mother ship
+MOTHERSHIP_IP="10.218.XXX.XXX"
+
+# Destination directory on the mother ship
+MOTHERSHIP_DESTINATION="/path/to/death/star/"
+
+# Username for accessing the data center nodes
+DATACENTER_USER="skywalker"
+
+# A compute node in the data center
+DUMMY_COMPUTE_NODE="10.XX.XX.XXX"
+
+# Destination directory within the data center
+DATACENTER_DESTINATION="/home/<users>/${DATACENTER_USER}/<folder>/"
+
+# Local destination directory for files
+LOCAL_DESTINATION="/path/to/local/death/star/"
 ```
 
 ## 🛠️ Ussage Guide ⚡
@@ -61,6 +91,35 @@ ADMIN_SERVER="vader-mothership"
  vim source.cfg
  # Run VaderShell
  ./vadershell.sh
+```
+
+```sh
+__     __        _           ____  _          _ _
+\ \   / /_ _  __| | ___ _ __/ ___|| |__   ___| | |
+ \ \ / / _` |/ _` |/ _ \ '__\___ \| '_ \ / _ \ | |
+  \ V / (_| | (_| |  __/ |   ___) | | | |  __/ | |
+   \_/ \__,_|\__,_|\___|_|  |____/|_| |_|\___|_|_|
+
+-------------------------------------
+Resolving IP addresses for servers...
+-------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Available Virtual Machines:
+3.  (VM) VM-1
+2.  (VM) VM-2
+1.  (VM) VM-3
+-----------------------------------------------------------
+4.  Server: Server-1 (IP: 10.XXX.XXX.XX)
+5.  Server: Server-2 (IP: 10.XXX.XXX.XX)
+6.  Server: Server-3 (IP: 10.XXX.XXX.XX)
+7.  Datacenter Gateway Node
+8.  Datacenter Compute nodes
+9.  Mother Ship (Admin)
+10.  VM Management
+11.  SCP File Transfer
+12.  Exit
+Enter your menu choice [1-12]:
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ```
 
 ## 🛠️ Upcoming Features ⚡  
