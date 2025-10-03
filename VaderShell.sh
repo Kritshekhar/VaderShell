@@ -47,7 +47,14 @@ c4_node() {
     read -p "Enter SSH user: " username
     read -p "Enter Node ID: " device_id
     local ip_suffix=$((100 + device_id - 1))
-    local ssh_command="sudo ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -tt -i $DATACENTER_GW_SSH_KEY_PATH krit@$DATACENTER_GW_IP \"ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $username@$DATACENTER_BASE_IP$ip_suffix\""
+    local ssh_command="sudo ssh -tt \
+        -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+        -o ServerAliveInterval=30 -o ServerAliveCountMax=5 -o TCPKeepAlive=yes \
+        -i \"$DATACENTER_GW_SSH_KEY_PATH\" krit@$DATACENTER_GW_IP \
+        \"ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+        -o ServerAliveInterval=30 -o ServerAliveCountMax=5 -o TCPKeepAlive=yes \
+        $username@${DATACENTER_BASE_IP}${ip_suffix}\""
+
     eval "$ssh_command"
 }
 
