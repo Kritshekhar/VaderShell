@@ -3,6 +3,61 @@
 # Load configuration file
 source config.cfg
 
+# ===================== Logging toggle (drop-in) =====================
+# Assumes config.cfg already sourced above.
+: "${VADERSHELL_LOG_ENABLED:=1}"
+: "${VADERSHELL_LOG_MODE:=tee}"
+: "${VADERSHELL_LOG_DIR:=$HOME/.vadershell/logs}"
+: "${VADERSHELL_LOG_FILE:=}"
+: "${VADERSHELL_TRACE:=0}"
+
+if [[ "$VADERSHELL_LOG_ENABLED" == "1" ]]; then
+  mkdir -p "$VADERSHELL_LOG_DIR"
+  SCRIPT_NAME="$(basename "$0")"
+  START_TS="$(date +"%Y%m%d-%H%M%S")"
+  if [[ -z "$VADERSHELL_LOG_FILE" ]]; then
+    VADERSHELL_LOG_FILE="$VADERSHELL_LOG_DIR/${SCRIPT_NAME%.*}_${START_TS}.log"
+  else
+    mkdir -p "$(dirname "$VADERSHELL_LOG_FILE")"
+  fi
+
+  case "$VADERSHELL_LOG_MODE" in
+    tee)
+      exec > >(stdbuf -i0 -o0 -e0 tee -a "$VADERSHELL_LOG_FILE") 2>&1
+      ;;
+    ts-file)
+      # Console: raw; File: timestamped (pure bash)
+      exec > >(tee >(stdbuf -i0 -o0 -e0 bash -c '
+          f="$1"
+          while IFS= read -r line; do
+            printf "[%(%Y-%m-%d %H:%M:%S)T] %s\n" -1 "$line"
+          done >> "$f"
+        ' _ "$VADERSHELL_LOG_FILE")) 2>&1
+      ;;
+    ts-both)
+      # Console + File: timestamped (⚠ single-line prompts may appear late on console)
+      exec > >(bash -c '
+          f="$1"
+          while IFS= read -r line; do
+            printf "[%(%Y-%m-%d %H:%M:%S)T] %s\n" -1 "$line" | tee -a "$f"
+          done
+        ' _ "$VADERSHELL_LOG_FILE") 2>&1
+      ;;
+    none|*)
+      :
+      ;;
+  esac
+
+  echo "[INFO] Log enabled: $VADERSHELL_LOG_MODE -> $VADERSHELL_LOG_FILE"
+
+  if [[ "$VADERSHELL_TRACE" == "1" ]]; then
+    export PS4='+ $(date "+%Y-%m-%d %H:%M:%S") ${BASH_SOURCE##*/}:${LINENO}:${FUNCNAME[0]:-main}: '
+    set -x
+  fi
+fi
+# =================== End logging toggle block ======================
+
+
 declare -A vm_list
 declare -i total_vms=0
 declare -i total_servers=${#SERVERS[@]}

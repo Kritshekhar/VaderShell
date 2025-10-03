@@ -130,7 +130,6 @@ Enter your menu choice [1-12]:
 🔹 **More Comprehensive IP Discovery** – Improved detection across networks.  
 🔹 **Automated Backup & Restore** – Protect your Empire with scheduled snapshots.  
 🔹 **Live VM Migration** – Move VMs across hosts without downtime.  
-🔹 **Enhanced Logging & Monitoring** – A Sith Lord must always be aware.  
 🔹 **Dark Mode UI for CLI** – Because the Dark Side always looks better.  
 
 > ⚡ *"Once you start down the VaderShell path, forever will it dominate your destiny."*
