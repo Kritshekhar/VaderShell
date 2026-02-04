@@ -3,6 +3,14 @@
 # Load configuration file
 source config.cfg
 
+# Detect operating system
+OS_TYPE="$(uname -s)"
+case "$OS_TYPE" in
+    Linux*)     OS="Linux";;
+    Darwin*)    OS="macOS";;
+    *)          OS="Unknown";;
+esac
+
 # ===================== Logging toggle (drop-in) =====================
 # Assumes config.cfg already sourced above.
 : "${VADERSHELL_LOG_ENABLED:=1}"
@@ -23,11 +31,11 @@ if [[ "$VADERSHELL_LOG_ENABLED" == "1" ]]; then
 
   case "$VADERSHELL_LOG_MODE" in
     tee)
-      exec > >(stdbuf -i0 -o0 -e0 tee -a "$VADERSHELL_LOG_FILE") 2>&1
+      exec > >(tee -a "$VADERSHELL_LOG_FILE") 2>&1
       ;;
     ts-file)
       # Console: raw; File: timestamped (pure bash)
-      exec > >(tee >(stdbuf -i0 -o0 -e0 bash -c '
+      exec > >(tee >(bash -c '
           f="$1"
           while IFS= read -r line; do
             printf "[%(%Y-%m-%d %H:%M:%S)T] %s\n" -1 "$line"
@@ -48,6 +56,7 @@ if [[ "$VADERSHELL_LOG_ENABLED" == "1" ]]; then
       ;;
   esac
 
+  echo "[INFO] Detected OS: $OS"
   echo "[INFO] Log enabled: $VADERSHELL_LOG_MODE -> $VADERSHELL_LOG_FILE"
 
   if [[ "$VADERSHELL_TRACE" == "1" ]]; then
