@@ -5,7 +5,7 @@
   </h1>
 
   <!---<hr style="width: 60%; border: 1px solid #FFD700; margin: 20px auto;">-->
-  
+
   <p style="font-size: 1.5em; text-transform: uppercase; line-height: 1.5; max-width: 600px; margin: auto; font-weight: bold;">
     <span style="color: #FFD700;">Episode I:</span> <span style="color: #FF0000;">The Rise of VaderShell</span>
   </p>
@@ -17,29 +17,27 @@
     The Dark Side awaits... Will you answer the call?
   </p>
 
-  ---
+---
+
 </div>
 
-
- 
-
-## 🌌 Features  
+## 🌌 Features
 
 ✅ **Centralized SSH Management** – Easily connect to all servers in your network.
 
-✅ **Automatic IP Resolution** – Resolves IPs for servers and VirtualBox VMs.  
+✅ **Automatic IP Resolution** – Resolves IPs for servers and VirtualBox VMs.
 
-✅ **VM Control Panel** – Start, Stop, SSH, and manage VirtualBox instances.  
+✅ **VM Control Panel** – Start, Stop, SSH, and manage VirtualBox instances.
 
-✅ **Configurable & Extendable** – Define your infrastructure in `source.cfg`.  
+✅ **Configurable & Extendable** – Define your infrastructure in `source.cfg`.
 
-✅ **Skywalker Mode** – The **Mother Ship (Admin Server)** has full control over the fleet.  
+✅ **Skywalker Mode** – The **Mother Ship (Admin Server)** has full control over the fleet.
 
 ---
 
-## ⚙️ Configuration  
+## ⚙️ Configuration
 
-Before launching **VaderShell**, populate `source.cfg` with your infrastructure details:  
+Before launching **VaderShell**, populate `source.cfg` with your infrastructure details:
 
 ```ini
 # List of servers in the format <hostname>:<user>@<hostname>
@@ -84,13 +82,36 @@ LOCAL_DESTINATION="/path/to/local/death/star/"
 
 ## 🛠️ Ussage Guide ⚡
 
+### Linux Setup
+
+```bash
+git clone https://github.com/your-repo/vadershell.git
+cd vadershell
+# Configure your servers and infrastructure
+vim source.cfg
+# Run VaderShell
+./vadershell.sh
 ```
- git clone https://github.com/your-repo/vadershell.git
- cd vadershell
- #Configure your servers and infrastructure
- vim source.cfg
- # Run VaderShell
- ./vadershell.sh
+
+### macOS Setup
+
+VaderShell now supports macOS! Follow these steps:
+
+```bash
+# Clone the repository
+git clone https://github.com/your-repo/vadershell.git
+cd vadershell
+
+brew install figlet
+
+# Configure your servers and infrastructure
+vim source.cfg
+
+# Make the script executable
+chmod +x VaderShell.sh
+
+# Run VaderShell
+./VaderShell.sh
 ```
 
 ```sh
@@ -122,28 +143,30 @@ Enter your menu choice [1-12]:
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ```
 
-## 🛠️ Upcoming Features ⚡  
+## 🛠️ Upcoming Features ⚡
 
-🚀 **🌑 The Force Grows Stronger:**  
+🚀 **🌑 The Force Grows Stronger:**
 
-🔹 **Support for QEMU & KVM VMs**  – Expand VaderShell beyond VirtualBox.  
+🔹 **Support for QEMU & KVM VMs** – Expand VaderShell beyond VirtualBox.  
 🔹 **More Comprehensive IP Discovery** – Improved detection across networks.  
 🔹 **Automated Backup & Restore** – Protect your Empire with scheduled snapshots.  
 🔹 **Live VM Migration** – Move VMs across hosts without downtime.  
-🔹 **Dark Mode UI for CLI** – Because the Dark Side always looks better.  
+🔹 **Dark Mode UI for CLI** – Because the Dark Side always looks better.
 
-> ⚡ *"Once you start down the VaderShell path, forever will it dominate your destiny."*
+> ⚡ _"Once you start down the VaderShell path, forever will it dominate your destiny."_
 
-## ⚡ Troubleshooting  
+## ⚡ Troubleshooting
 
-### 🛑 No IP Found for VM?  
+### 🛑 No IP Found for VM?
+
 ✔️ Ensure the VM is **running**.  
 ✔️ Check if the network mode is set to **Bridged Adapter**.  
-✔️ Use the following command to retrieve the IP:  
-   ```sh
-   VBoxManage guestproperty get <VM_NAME> "/VirtualBox/GuestInfo/Net/0/V4/IP"
-   ```
-✔️ If no IP is found, try checking the ARP table: ```arp -a | grep -i "<VM_MAC_ADDRESS>"```
+✔️ Use the following command to retrieve the IP:
+
+```sh
+VBoxManage guestproperty get <VM_NAME> "/VirtualBox/GuestInfo/Net/0/V4/IP"
+```
+
+✔️ If no IP is found, try checking the ARP table: `arp -a | grep -i "<VM_MAC_ADDRESS>"`
 
 > ⚡ "Patience, young Padawan. Troubleshooting is the path to mastery."
-
