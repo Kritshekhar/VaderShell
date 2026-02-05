@@ -33,6 +33,8 @@
 
 ✅ **Skywalker Mode** – The **Mother Ship (Admin Server)** has full control over the fleet.
 
+✅ **SCP File Transfer** – Move files to and from datacenter nodes with deep and shallow copy modes.
+
 ---
 
 ## ⚙️ Configuration
@@ -142,6 +144,35 @@ Available Virtual Machines:
 Enter your menu choice [1-12]:
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ```
+
+## 📁 SCP File Transfer
+
+VaderShell supports multiple file transfer modes via the **SCP File Transfer** menu option:
+
+### Transfer Modes
+
+| Mode | Direction | Description |
+|------|-----------|-------------|
+| **Deep Copy (Download)** | Datacenter → Local | 3-hop transfer: Compute Node → Gateway → Mothership → Localhost. Files are staged at each hop. |
+| **Shallow Copy (Download)** | Datacenter → Local | Direct transfer via SSH ProxyJump (`-J`) through the gateway. No intermediate staging. |
+| **Shallow Copy (Upload)** | Local → Datacenter | Upload local files to the datacenter compute node via ProxyJump. Supports glob patterns (e.g., `*.zip`) and optional cleanup of local files after successful upload. |
+| **Local Server** | Server → Local | Transfer files from a configured local server through the Mothership to localhost. |
+
+### Deep vs Shallow Copy
+
+```
+Deep Copy (3-hop):
+  Compute Node ──scp──▶ Gateway ──scp──▶ Mothership ──scp──▶ Localhost
+
+Shallow Copy (ProxyJump):
+  Compute Node ◀──scp -J gateway──▶ Localhost
+```
+
+**Deep copy** stages files at each intermediate node — useful when direct ProxyJump is not available or when files need to be retained at intermediate nodes.
+
+**Shallow copy** uses `scp -J` (ProxyJump) to tunnel through the gateway, transferring files directly between the compute node and localhost in a single command.
+
+---
 
 ## 🛠️ Upcoming Features ⚡
 

@@ -225,18 +225,20 @@ get_vm_ip() {
 scp_file_transfer() {
     source config.cfg  # Load configuration variables
 
-    echo "Select source:"
-    echo "1) Datacenter Node"
-    echo "2) Local Server"
-    read -p "Enter choice (1 or 2): " choice
+    echo "Select transfer mode:"
+    echo "1) Datacenter Node (Deep Copy - Download)"
+    echo "2) Datacenter Node (Shallow Copy - Download)"
+    echo "3) Datacenter Node (Shallow Copy - Upload)"
+    echo "4) Local Server"
+    read -p "Enter choice (1-4): " choice
 
     if [ "$choice" -eq 1 ]; then
-        echo "Transferring from Datacenter Node..."
+        echo "Deep copy from Datacenter Node (3-hop)..."
 
         read -p "Enter target file: " target_file
         read -p "Enter destination filename: " dest_filename
 
-        echo " ++++++++++++++++++ SCP File Transfer ++++++++++++++++++"
+        echo " ++++++++++++++++++ SCP Deep Copy ++++++++++++++++++"
         echo " - Target file: $target_file"
         echo " - Destination file name: $dest_filename"
         echo "----------------------------------------------------------"
@@ -255,6 +257,65 @@ scp_file_transfer() {
         echo "+++++++++++ File copied to the Mother ship +++++++++++++"
 
     elif [ "$choice" -eq 2 ]; then
+        echo "Shallow copy from Datacenter Node (via ProxyJump)..."
+
+        read -p "Enter target file: " target_file
+        read -p "Enter destination filename: " dest_filename
+
+        echo " ++++++++++++++++++ SCP Shallow Download ++++++++++++++++++"
+        echo " - Source: ${DATACENTER_USER}@${DUMMY_COMPUTE_NODE}:${target_file}"
+        echo " - Destination: ${LOCAL_DESTINATION}${dest_filename}"
+        echo " - Jump host: ${DATACENTER_USER}@${DATACENTER_GW_IP}"
+        echo "----------------------------------------------------------"
+
+        scp_cmd="scp -r -p -J ${DATACENTER_USER}@${DATACENTER_GW_IP} -i ${DATACENTER_GW_SSH_KEY_PATH} -- ${DATACENTER_USER}@${DUMMY_COMPUTE_NODE}:${target_file} ${LOCAL_DESTINATION}${dest_filename}"
+        echo "$scp_cmd"
+        eval "$scp_cmd"
+
+        echo "+++++++++++ File copied to localhost +++++++++++++"
+        return
+
+    elif [ "$choice" -eq 3 ]; then
+        echo "Shallow upload to Datacenter Node (via ProxyJump)..."
+
+        read -p "Enter local file pattern (e.g., /path/to/*.zip or /path/to/file): " file_pattern
+        read -p "Delete local files after successful upload? (y/n) [n]: " delete_after
+        delete_after="${delete_after:-n}"
+
+        echo " ++++++++++++++++++ SCP Shallow Upload ++++++++++++++++++"
+        echo " - Source pattern: ${file_pattern}"
+        echo " - Destination: ${DATACENTER_USER}@${DUMMY_COMPUTE_NODE}:${DATACENTER_DESTINATION}"
+        echo " - Jump host: ${DATACENTER_USER}@${DATACENTER_GW_IP}"
+        echo " - Delete after upload: ${delete_after}"
+        echo "----------------------------------------------------------"
+
+        shopt -s nullglob
+        files=( ${file_pattern} )
+        shopt -u nullglob
+
+        if [ ${#files[@]} -eq 0 ]; then
+            echo "No files matched pattern: ${file_pattern}"
+            return 1
+        fi
+
+        for f in "${files[@]}"; do
+            echo "Uploading: $f"
+            if scp -p -J ${DATACENTER_USER}@${DATACENTER_GW_IP} -i ${DATACENTER_GW_SSH_KEY_PATH} \
+                  -- "$f" ${DATACENTER_USER}@${DUMMY_COMPUTE_NODE}:${DATACENTER_DESTINATION}; then
+                echo "SUCCESS: $f"
+                if [ "$delete_after" = "y" ] || [ "$delete_after" = "Y" ]; then
+                    rm -f -- "$f"
+                    echo "DELETED: $f"
+                fi
+            else
+                echo "FAILED: $f" >&2
+            fi
+        done
+
+        echo "+++++++++++ Upload complete +++++++++++++"
+        return
+
+    elif [ "$choice" -eq 4 ]; then
         echo "Transferring from Local Server..."
 
 		echo "Select server to transfer file from:"
